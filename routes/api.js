@@ -42,6 +42,12 @@ module.exports = function(app) {
     .post(function(req, res) {
       var project = req.params.project;
       console.log('POST', project);
+            
+    // Validate
+      if(!req.body.issue_title || !req.body.issue_text || !req.body.created_by){
+        return res.status(400).send('missing required fields');
+      }
+      
       const issue = new Issue({
         issue_title: req.body.issue_title,
         issue_text: req.body.issue_text,
