@@ -86,15 +86,16 @@ module.exports = function(app) {
       } else if(!req.body){
         return res.status(400).send('no updated field sent');
       }
-    
-      let issue = {...req.body, updated_on: new Date() };
 
+      let issue = {...req.body, updated_on: new Date() };
+    
       Issue.findByIdAndUpdate(issueId, issue, (err, savedIssue) => {
         if (err) {
           console.log("error", err);
           res.json({ error: err });
           return;
         } else {
+          console.log('updated', savedIssue)
           res.json(savedIssue);
           return;
         }

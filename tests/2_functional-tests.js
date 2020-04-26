@@ -110,7 +110,7 @@ suite("Functional Tests", function() {
         .request(server)
         .put("/api/issues/test")
         .send({
-          _id: "5ea569818b7f242063a06e54",
+          _id: "5ea56a377583f22168cf1008",
           issue_title: "Updated Title",
           issue_text: "updated text",
           created_by: "Functional Test - Multiple fields to update",
