@@ -19,6 +19,7 @@ const CONNECTION_STRING = process.env.DB;
 module.exports = function (app) {
   
   app.use(bodyParser.text());
+  
   MongoClient.connect(CONNECTION_STRING, function(err, db) {
     if(err) console.log('Database error: ' + err);
     
