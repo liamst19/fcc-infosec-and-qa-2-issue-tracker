@@ -45,13 +45,13 @@ suite('Functional Tests', function() {
         .send({
           issue_title: 'Title',
           issue_text: 'text',
-          created_by: 'Functional Test - Every field filled in'
+          created_by: 'Functional Test - Required fields filled in'
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
           assert.equal(res.body.issue_title, 'Title');
           assert.equal(res.body.issue_text, 'text');
-          assert.equal(res.body.created_by, 'Functional Test - Every field filled in');
+          assert.equal(res.body.created_by, 'Functional Test - Required fields filled in');
           
           done();
         });

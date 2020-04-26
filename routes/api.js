@@ -22,15 +22,18 @@ module.exports = function(app) {
   /** this project needs a db !! **/
 
   mongoose.connect(process.env.DB);
-  
+
   const issueSchema = new Schema({
-        issue_title: { type: String, required: true },
-        issue_text:  { type: String, required: true },
-        created_by:  { type: String, required: true },
-        assigned_to: { type: String },
-        status_text: { type: String }
+    issue_title: { type: String, required: true },
+    issue_text: { type: String, required: true },
+    created_by: { type: String, required: true },
+    assigned_to: { type: String },
+    status_text: { type: String },
+    created_on: { type: Date },
+    updated_on: { type: Date },
+    open: { type: Boolean }
   });
-  const Issue = mongoose.model('Issue', issueSchema);
+  const Issue = mongoose.model("Issue", issueSchema);
 
   app
     .route("/api/issues/:project")
@@ -41,35 +44,67 @@ module.exports = function(app) {
 
     .post(function(req, res) {
       var project = req.params.project;
-      console.log('POST', project);
-            
-    // Validate
-      if(!req.body.issue_title || !req.body.issue_text || !req.body.created_by){
-        return res.status(400).send('missing required fields');
+      console.log("POST", project);
+
+      // Validate
+      if (
+        !req.body.issue_title ||
+        !req.body.issue_text ||
+        !req.body.created_by
+      ) {
+        return res.status(400).send("missing required fields");
       }
-      
+      const issueDate = new Date();
+
       const issue = new Issue({
         issue_title: req.body.issue_title,
         issue_text: req.body.issue_text,
         created_by: req.body.created_by,
         assigned_to: req.body.assigned_to,
-        status_text: req.body.status_text
+        status_text: req.body.status_text,
+        created_on: issueDate,
+        updated_on: issueDate,
+        open: true
       });
       issue.save((err, savedIssue) => {
-        if(err){
-                console.log('error', err)
-                res.json({ 'error': err })
-                return;
-              } else {
-                res.json(savedIssue)
-                return;
-              }
-      })
+        if (err) {
+          console.log("error", err);
+          res.json({ error: err });
+          return;
+        } else {
+          res.json(savedIssue);
+          return;
+        }
+      });
     })
 
     .put(function(req, res) {
       var project = req.params.project;
-      console.log("PUT", project);
+      console.log("PUT", { project, body: req.body });
+      const issueId = req.body._id;
+      if (!issueId) {
+        return res.status(400).send("Id is missing");
+      }
+      let issue = {}
+        issue.issue_title: req.body.issue_title,
+        issue.issue_text:  req.body.issue_text,
+        issue.created_by:  req.body.created_by,
+        issue.assigned_to: req.body.assigned_to,
+        issue.status_text: req.body.status_text,
+        issue.updated_on:  new Date(),
+        issue.open:        req.body.open
+
+    
+      Issue.findByIdAndUpdate(issueId, issue, (err, savedIssue) => {
+        if (err) {
+          console.log("error", err);
+          res.json({ error: err });
+          return;
+        } else {
+          res.json(savedIssue);
+          return;
+        }
+      });
     })
 
     .delete(function(req, res) {
