@@ -24,6 +24,7 @@ module.exports = function(app) {
   mongoose.connect(process.env.DB);
 
   const issueSchema = new Schema({
+    project:     { type: String, required: true },
     issue_title: { type: String, required: true },
     issue_text: { type: String, required: true },
     created_by: { type: String, required: true },
@@ -39,7 +40,15 @@ module.exports = function(app) {
     .route("/api/issues/:project")
     .get(function(req, res) {
       var project = req.params.project;
-      console.log("GET", project);
+      console.log("GET", {project, query: req.query});
+      Issue.find(req.query, (err, issues) => {
+        if(err){
+          console.log("error", err)
+          return res.status(500)
+        } else{
+         res.json(issues) 
+        }               
+      })
       
     })
 
@@ -57,6 +66,7 @@ module.exports = function(app) {
       const issueDate = new Date();
 
       const issue = new Issue({
+        project: project,
         issue_title: req.body.issue_title,
         issue_text: req.body.issue_text,
         created_by: req.body.created_by,
@@ -82,7 +92,7 @@ module.exports = function(app) {
       var project = req.params.project;
       const issueId = req.body._id;
       if (!issueId) {
-        return res.status(400).send("Id is missing");
+        return res.status(400).send("_id error");
       } else if (!req.body) {
         return res.status(400).send("no updated field sent");
       }
@@ -109,5 +119,19 @@ module.exports = function(app) {
     .delete(function(req, res) {
       var project = req.params.project;
       console.log("DELETE", project);
+      const issueId = req.body._id;
+      if (!issueId) {
+        return res.status(400).send("_id error");
+      }
+    
+      Issue.findByIdAndDelete(issueId, (err) => {
+        if(err){
+          console.log('error', err);
+          return res.status(400).send('could not delete' + issueId)
+        } else{
+          return res.status(200).send('deleted '+ issueId)
+        }
+      })
+    
     });
 };

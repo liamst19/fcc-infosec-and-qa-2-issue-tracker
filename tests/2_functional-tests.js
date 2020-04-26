@@ -141,6 +141,7 @@ suite("Functional Tests", function() {
           .get("/api/issues/test")
           .query({})
           .end(function(err, res) {
+            console.log('response', res.body[0])
             assert.equal(res.status, 200);
             assert.isArray(res.body);
             assert.property(res.body[0], "issue_title");
