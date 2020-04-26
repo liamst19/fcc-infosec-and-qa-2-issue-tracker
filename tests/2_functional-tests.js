@@ -91,22 +91,45 @@ suite("Functional Tests", function() {
     });
 
     test("One field to update", function(done) {
-      const updateText = "text update" + new Date().toString();
       chai
         .request(server)
         .put("/api/issues/test")
         .send({
           _id: "5ea569818b7f242063a06e54",
-          issue_text: updateText
+          issue_text: "One field to update"
         })
         .end(function(err, res) {
           assert.equal(res.status, 200);
-          assert.equal(res.body.issue_text, updateText);
+          assert.equal(res.body.issue_text, "One field to update");
           done();
         });
     });
 
-    test("Multiple fields to update", function(done) {});
+    test("Multiple fields to update", function(done) {
+      chai
+        .request(server)
+        .put("/api/issues/test")
+        .send({
+          _id: "5ea569818b7f242063a06e54",
+          issue_title: "Updated Title",
+          issue_text: "updated text",
+          created_by: "Functional Test - Multiple fields to update",
+          assigned_to: "Updted Chai and Mocha",
+          status_text: "In QA Updated"
+        })
+        .end(function(err, res) {
+          assert.equal(res.status, 200);
+          assert.equal(res.body.issue_title, "Updated Title");
+          assert.equal(res.body.issue_text, "updated text");
+          assert.equal(
+            res.body.created_by,
+            "Functional Test - Multiple fields to update"
+          );
+          assert.equal(res.body.assigned_to, "Updted Chai and Mocha");
+          assert.equal(res.body.status_text, "In QA Updated");
+          done();
+        });
+    });
   });
 
   suite(

@@ -20,9 +20,10 @@ module.exports = function(app) {
   app.use(bodyParser.text());
 
   /** this project needs a db !! **/
-
+  mongoose.set('useFindAndModify', false);
   mongoose.connect(process.env.DB);
 
+  
   const issueSchema = new Schema({
     issue_title: { type: String, required: true },
     issue_text: { type: String, required: true },
@@ -44,7 +45,6 @@ module.exports = function(app) {
 
     .post(function(req, res) {
       var project = req.params.project;
-      console.log("POST", {project, body: req.body});
 
       // Validate
       if (
@@ -80,7 +80,6 @@ module.exports = function(app) {
 
     .put(function(req, res) {
       var project = req.params.project;
-      console.log("PUT", { project, body: req.body });
       const issueId = req.body._id;
       if (!issueId) {
         return res.status(400).send("Id is missing");
