@@ -20,10 +20,9 @@ module.exports = function(app) {
   app.use(bodyParser.text());
 
   /** this project needs a db !! **/
-  mongoose.set('useFindAndModify', false);
+  mongoose.set("useFindAndModify", false);
   mongoose.connect(process.env.DB);
 
-  
   const issueSchema = new Schema({
     issue_title: { type: String, required: true },
     issue_text: { type: String, required: true },
@@ -41,6 +40,7 @@ module.exports = function(app) {
     .get(function(req, res) {
       var project = req.params.project;
       console.log("GET", project);
+      
     })
 
     .post(function(req, res) {
@@ -83,23 +83,27 @@ module.exports = function(app) {
       const issueId = req.body._id;
       if (!issueId) {
         return res.status(400).send("Id is missing");
-      } else if(!req.body){
-        return res.status(400).send('no updated field sent');
+      } else if (!req.body) {
+        return res.status(400).send("no updated field sent");
       }
 
-      let issue = {...req.body, updated_on: new Date() };
-    
-      Issue.findByIdAndUpdate(issueId, issue, (err, savedIssue) => {
-        if (err) {
-          console.log("error", err);
-          res.json({ error: err });
-          return;
-        } else {
-          console.log('updated', savedIssue)
-          res.json(savedIssue);
-          return;
+      let issue = { ...req.body, updated_on: new Date() };
+
+      Issue.findByIdAndUpdate(
+        issueId,
+        issue,
+        { new: true },
+        (err, savedIssue) => {
+          if (err) {
+            console.log("error", err);
+            res.json({ error: err });
+            return;
+          } else {
+            res.json(savedIssue);
+            return;
+          }
         }
-      });
+      );
     })
 
     .delete(function(req, res) {

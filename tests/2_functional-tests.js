@@ -95,7 +95,7 @@ suite("Functional Tests", function() {
         .request(server)
         .put("/api/issues/test")
         .send({
-          _id: "5ea569818b7f242063a06e54",
+          _id: "5ea56a5b44c2d921d557d3b5",
           issue_text: "One field to update"
         })
         .end(function(err, res) {
