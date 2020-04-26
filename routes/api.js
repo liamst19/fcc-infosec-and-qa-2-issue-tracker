@@ -44,7 +44,7 @@ module.exports = function(app) {
 
     .post(function(req, res) {
       var project = req.params.project;
-      console.log("POST", project);
+      console.log("POST", {project, body: req.body});
 
       // Validate
       if (
@@ -84,17 +84,12 @@ module.exports = function(app) {
       const issueId = req.body._id;
       if (!issueId) {
         return res.status(400).send("Id is missing");
+      } else if(!req.body){
+        return res.status(400).send('no updated field sent');
       }
-      let issue = {}
-        issue.issue_title: req.body.issue_title,
-        issue.issue_text:  req.body.issue_text,
-        issue.created_by:  req.body.created_by,
-        issue.assigned_to: req.body.assigned_to,
-        issue.status_text: req.body.status_text,
-        issue.updated_on:  new Date(),
-        issue.open:        req.body.open
-
     
+      let issue = {...req.body, updated_on: new Date() };
+
       Issue.findByIdAndUpdate(issueId, issue, (err, savedIssue) => {
         if (err) {
           console.log("error", err);
