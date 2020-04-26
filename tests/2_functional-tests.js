@@ -14,6 +14,7 @@ var server = require("../server");
 chai.use(chaiHttp);
 
 suite("Functional Tests", function() {
+  
   suite("POST /api/issues/{project} => object with issue data", function() {
     test("Every field filled in", function(done) {
       chai
@@ -207,12 +208,23 @@ suite("Functional Tests", function() {
           .delete("/api/issues/test")
           .send({
           })
-          .end(function(err, res) {            
+          .end(function(err, res) {
             assert.equal(res.status, 400);
-            assert.equal(res.body, '_id error')
+            done();
           });  
     });
 
-    test("Valid _id", function(done) {});
+    test("Valid _id", function(done) {
+        chai
+          .request(server)
+          .delete("/api/issues/test")
+          .send({
+            _id: '5ea57eb219fac217c501118c'
+          })
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            done();
+          });  
+    });
   });
 });
