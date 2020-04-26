@@ -40,8 +40,8 @@ module.exports = function(app) {
     .route("/api/issues/:project")
     .get(function(req, res) {
       var project = req.params.project;
-      console.log("GET", {project, query: req.query});
-      Issue.find(req.query, (err, issues) => {
+      const query = { project, ...req.query }
+      Issue.find(query, (err, issues) => {
         if(err){
           console.log("error", err)
           return res.status(500)
